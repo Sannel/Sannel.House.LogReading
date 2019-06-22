@@ -1,0 +1,7 @@
+---
+Client:
+  UserName: test@test.com
+  Password: Password
+  BaseAddress: https://gateway.dev.local/api/v1/
+  ClientId: test-client
+  ClientSecret: ClientPassword
