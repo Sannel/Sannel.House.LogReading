@@ -262,7 +262,9 @@ jobs:
         imageName: '$(imageName)-linux-arm32v7'
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     - powershell: |
-        sudo chown -R $(id -u):$(id -g) $(Build.StagingDirectory)/
+        $uid = id -u
+        $gid = id -g
+        sudo chown -R $uid:$gid $(Build.StagingDirectory)/
         $img = "$(imageName)".ToLower()
         docker save -o $(Build.StagingDirectory)/$(dockerRepositoryRoot).$(dockerRepositoryName).linux.arm32v7.tar "${img}-linux-arm32v7"
         bzip2 -9 $(Build.StagingDirectory)/$(dockerRepositoryRoot).$(dockerRepositoryName).linux.arm32v7.tar
@@ -384,7 +386,9 @@ jobs:
         imageName: '$(imageName)-linux-arm64v8'
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     - powershell: |
-        sudo chown -R $(id -u):$(id -g) $(Build.StagingDirectory)/
+        $uid = id -u
+        $gid = id -g
+        sudo chown -R $uid:$gid $(Build.StagingDirectory)/
         $img = "$(imageName)".ToLower()
         docker save -o $(Build.StagingDirectory)/$(dockerRepositoryRoot).$(dockerRepositoryName).linux.arm64v8.tar "${img}-linux-arm64v8"
         bzip2 -9 $(Build.StagingDirectory)/$(dockerRepositoryRoot).$(dockerRepositoryName).linux.arm64v8.tar
@@ -522,7 +526,9 @@ jobs:
         imageName: '$(imageName)-linux-x64'
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     - powershell: |
-        sudo chown -R $(id -u):$(id -g) $(Build.StagingDirectory)/
+        $uid = id -u
+        $gid = id -g
+        sudo chown -R $uid:$gid $(Build.StagingDirectory)/
         $img = "$(imageName)".ToLower()
         docker save -o $(Build.StagingDirectory)/$(dockerRepositoryRoot).$(dockerRepositoryName).linux.x64.tar "${img}-linux-x64"
         bzip2 -9 $(Build.StagingDirectory)/$(dockerRepositoryRoot).$(dockerRepositoryName).linux.x64.tar
