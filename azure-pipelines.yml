@@ -3,12 +3,12 @@ trigger:
 - develop
 
 variables:
-  sdk_version: 3.0.100-preview6-012264
+  sdk_version: 2.2.300
   dockerRepositoryRoot: sannelfunctions
   dockerRepositoryName: house.logreading
   dockerTagBase: $(Build.SourceBranchName)-$(Build.BuildId)
   imageName: $(dockerRepositoryRoot)/$(dockerRepositoryName):$(dockerTagBase)
-  projectFolder: Sannel.House.OpenFaasRunner
+  projectFolder: Function
   mainProjectPath: src/$(projectFolder)/$(projectFolder).csproj
   mainConfigPath: src/$(projectFolder)/app_config
   tag: beta
@@ -117,11 +117,6 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y qemu qemu-user-static qemu-user binfmt-support git
         Copy-Item -Verbose /usr/bin/qemu-arm-static $(Build.StagingDirectory)
-        git clone https://github.com/Sannel/Sannel.House.OpenFaasRunner.git $(Build.StagingDirectory)/runner
-        Copy-Item -Verbose -Recurse $(Build.StagingDirectory)/runner/src/Sannel.House.OpenFaasRunner src/Sannel.House.OpenFaasRunner
-        sudo rm -rf $(Build.StagingDirectory)/runner
-        New-Item -ItemType Directory src/Template
-        New-Item -Verbose -ItemType SymbolicLink src/Template/Function -Value ${pwd}/src/Function
         # Use the environment variables input below to pass secret variables to this script
       displayName: 'Install qemu'
     - task: DotNetCoreInstaller@0
@@ -157,7 +152,7 @@ jobs:
         command: publish
         publishWebProjects: false
         projects: $(mainProjectPath)
-        arguments: '-r linux-arm -o $(Build.StagingDirectory)'
+        arguments: '-r linux-arm -o $(Build.StagingDirectory)/Function/'
         zipAfterPublish: false
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.StagingDirectory)/$(projectFolder)/app_config/'
@@ -239,7 +234,7 @@ jobs:
 - job: linux_arm64
   pool:
     vmImage: ubuntu-16.04
-  condition: ne(variables['disableLinux'], 'true')
+  condition: ne(variables['disableLinux'], 'true2')
   steps:
     - powershell: |
         # Write your commands here
@@ -281,7 +276,7 @@ jobs:
         command: publish
         publishWebProjects: false
         projects: $(mainProjectPath)
-        arguments: '-r linux-arm64 -o $(Build.StagingDirectory)'
+        arguments: '-r linux-arm64 -o $(Build.StagingDirectory)/Function'
         zipAfterPublish: false
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.StagingDirectory)/$(projectFolder)/app_config/'
@@ -402,7 +397,7 @@ jobs:
         command: publish
         publishWebProjects: false
         projects: $(mainProjectPath)
-        arguments: '-r linux-x64 -o $(Build.StagingDirectory)'
+        arguments: '-r linux-x64 -o $(Build.StagingDirectory)/Function'
         zipAfterPublish: false
 
     - task: DotNetCoreCLI@2
@@ -540,7 +535,7 @@ jobs:
         command: publish
         publishWebProjects: false
         projects: $(mainProjectPath)
-        arguments: '-r win-x64 -o $(Build.StagingDirectory)'
+        arguments: '-r win-x64 -o $(Build.StagingDirectory)/Function'
         zipAfterPublish: false
     - task: DotNetCoreCLI@2
       displayName: 'dotnet clean'
@@ -731,7 +726,7 @@ jobs:
         command: publish
         publishWebProjects: false
         projects: $(mainProjectPath)
-        arguments: '-r win-arm -o $(Build.StagingDirectory)'
+        arguments: '-r win-arm -o $(Build.StagingDirectory)/Function'
         zipAfterPublish: false
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.StagingDirectory)/$(projectFolder)/app_config/'
