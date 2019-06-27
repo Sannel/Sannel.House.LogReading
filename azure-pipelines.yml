@@ -119,8 +119,9 @@ jobs:
         Copy-Item -Verbose /usr/bin/qemu-arm-static $(Build.StagingDirectory)
         git clone https://github.com/Sannel/Sannel.House.OpenFaasRunner.git $(Build.StagingDirectory)/runner
         Copy-Item -Verbose -Recurse $(Build.StagingDirectory)/runner/src/Sannel.House.OpenFaasRunner src/Sannel.House.OpenFaasRunner
+        Remove-Item -Recurse $(Build.StagingDirectory)/runner
         New-Item -ItemType Directory src/Template
-        New-Item -Verbose -ItemType SymbolicLink src/Template/Function -Value src/Function
+        New-Item -Verbose -ItemType SymbolicLink src/Template/Function -Value ${pwd}/src/Function
         # Use the environment variables input below to pass secret variables to this script
       displayName: 'Install qemu'
     - task: DotNetCoreInstaller@0
